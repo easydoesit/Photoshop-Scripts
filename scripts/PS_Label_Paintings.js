@@ -3,7 +3,7 @@
 #target photoshop;
 
 // choose your folder
-const outputFolder = "~/Documents/apps/michaelgrills/src/paintings";
+const outputFolder = "~/apps/michaelgrills/src/paintings";
 
 // check if the folder exists if not make it.
 const makeFolder = function (folderStr) {
@@ -125,7 +125,7 @@ const depthText = depthGroup.add("edittext", [margin + labelWidth, margin - 2, s
 // Price Group
 const priceGroup = dlg.add("panel", [margin, margin + (groupHeight * 4), groupWidth, groupHeight * 5]);
 priceGroup.add("statictext", labelPlacement, "Price $:");
-const priceText = priceGroup.add("edittext", [margin + labelWidth, margin - 2, 50, 0]);
+const priceText = priceGroup.add("edittext", [margin + labelWidth, margin - 2, 150, 0]);
 
 // Extras Group
 const extrasGroup = dlg.add("panel", [margin, margin + (groupHeight * 5), groupWidth, groupHeight * 6]);
@@ -144,7 +144,7 @@ const cancelbutton = cancelGroup.add("button", [10, 0, 220, groupHeight], "Cance
 
 okbutton.onClick = function () {
   if (app.documents.length > 0) {
-    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, heightText.text, widthText.text, depthText.text, frameCheck.value, priceText.text);
+    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, heightText.text, widthText.text, depthText.text, priceText.text, frameCheck.value,);
     if (saved) {
       alert("You did it.");
       dlg.hide();

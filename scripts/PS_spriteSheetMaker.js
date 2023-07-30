@@ -1,5 +1,3 @@
-#target photoshop
-
 // Save the current preferences
 var startRulerUnits = app.preferences.rulerUnits;
 var startTypeUnits = app.preferences.typeUnits;

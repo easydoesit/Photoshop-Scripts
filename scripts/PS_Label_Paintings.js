@@ -1,9 +1,8 @@
 //this script will create a dialogue box for naming files correctly.
 
-#target photoshop;
-
-// choose your folder
-const outputFolder = "~/apps/michaelgrills/src/paintings";
+const doc = app.activeDocument;
+//get the current title of the doc
+const docTitleArr = doc.name.split(".");
 
 // check if the folder exists if not make it.
 const makeFolder = function (folderStr) {
@@ -14,13 +13,16 @@ const makeFolder = function (folderStr) {
 
 };
 
-makeFolder(outputFolder);
+// check if number is an integer
+const isInt = function (n) {
+  return n % 1 === 0;
+}
 
 // get average color
 const getAverageColor = function () {
-  const doc = app.activeDocument;
   const x = 1;
   const y = 1;
+
 
   doc.flatten();
 
@@ -43,15 +45,90 @@ const getAverageColor = function () {
   return rgb;
 }
 
+const convertStringtoInt = function (numString) {
+  const returnNum = parseInt(numString);
+  return returnNum;
+}
+
+
 // saveName takes in all the info and creates a file name out of it
 // first checks that all the info is there
 // then changes any spaces in titles to have "-"
 // Then it writes out the file name
 
-const saveName = function (title, artistFName, artistLName, height, width, depth, price, frame) {
-  if (!title || !artistFName || !artistLName || !height || !width || !depth || !price) {
-    alert("Your missing information");
+const saveName = function (title, artistFName, artistLName, height, width, depth, price, frame, saveLoc) {
+  if (!title) {
+    alert("You forgot the title");
     return false;
+    titleText.active = true;
+  }
+
+  if (!artistFName) {
+    alert("You forgot First Name");
+    firstNameText.active = true;
+    return false;
+  }
+
+  if (!artistLName) {
+    alert("You forgot Last Name");
+    lastNameText.active = true;
+    return false;
+  }
+
+  if (!height) {
+    alert("Check Your Height Value \n Note it must be an integer");
+    heightText.active = true;
+    return false;
+  } else {
+    if (isNaN(height) || !isInt(height)) {
+      alert("Height is not an Integer");
+      heightText.active = true;
+      return false;
+    };
+  };
+
+  if (!width) {
+    alert("Check Your Width Value \n Note it must be an integer");
+    widthText.active = true;
+    return false;
+  } else {
+    if (isNaN(width) || !isInt(width)) {
+      alert("Width is not an Integer");
+      widthText.active = true;
+      return false;
+    };
+  };
+
+  if (!depth) {
+    alert("Check Your Depth Value \n Note it must be an integer");
+    depthText.active = true;
+    return false;
+  } else {
+    if (isNaN(depth) || !isInt(depth)) {
+      alert("Depth is not an Integer");
+      depthText.active = true;
+      return false;
+    };
+  };
+
+  if (!price) {
+    alert("Check Your Price Value \n Note it must be an integer include cents");
+    priceText.active = true;
+    return false;
+  } else {
+    if (isNaN(price) || !isInt(price)) {
+      priceText.active = true;
+      alert("Price is not an Integer");
+      return false;
+    };
+  };
+
+  if (!saveLoc) {
+    alert("You need to pick a save folder");
+    saveLocationText.active = true;
+    return false;
+  } else {
+    makeFolder(saveLoc);
   }
 
   const averageColor = getAverageColor();
@@ -65,7 +142,7 @@ const saveName = function (title, artistFName, artistLName, height, width, depth
   }
 
   //the file name
-  jpgFile = new File(outputFolder + "/" + realTitle + "-by_" + artistFName + "-" + artistLName + "-h" + height + "-w" + width + "-d" + depth + "-" + frame + "-p" + price + "-" + averageColor[0] + "_" + averageColor[1] + "_" + averageColor[2] + ".jpeg");
+  jpgFile = new File(saveLoc + "/" + realTitle + "-by_" + artistFName + "-" + artistLName + "-h" + height + "-w" + width + "-d" + depth + "-" + frame + "-p" + price + "-rgb" + averageColor[0] + "_" + averageColor[1] + "_" + averageColor[2] + ".jpeg");
   alert("Saving as: " + jpgFile);
   // jpg options
   jpgSaveOptions = new JPEGSaveOptions();
@@ -82,7 +159,7 @@ const saveName = function (title, artistFName, artistLName, height, width, depth
 // Dialogue Window
 const margin = 10;
 const width = 500;
-const height = 400;
+const height = 450;
 const rowHeight = 30;
 const labelWidth = 80;
 const lrgTextboxWidth = width - labelWidth;
@@ -97,7 +174,7 @@ const dlg = new Window("dialog", "Painting File Name", dialogSize, { closeButton
 // Title Group
 const inputTitleGroup = dlg.add("panel", [margin, margin, groupWidth, groupHeight]);
 inputTitleGroup.add("statictext", labelPlacement, "Title:");
-const titleText = inputTitleGroup.add("edittext", inputPlacement, "");
+const titleText = inputTitleGroup.add("edittext", inputPlacement, docTitleArr[0]);
 titleText.active = true;
 
 // Artist First Name Group
@@ -134,17 +211,27 @@ const frameGroup = extrasGroup.add("group", [0, 0, 240, groupHeight]);
 const frameCheck = frameGroup.add("checkbox", [margin + labelWidth, margin - 2, smlTextboxWidth, 0], "Framed?");
 //const availCheck = availGroup.add("checkbox", [margin + labelWidth, margin-2, smlTextboxWidth, 0], "Available?");
 
+//Save location Group
+const saveLocationGroup = dlg.add("panel", [margin, margin + (groupHeight * 6), groupWidth, groupHeight * 7]);
+const saveLocButton = saveLocationGroup.add("button", [0, 6, 80, groupHeight - 20], "Save @");
+const saveLocationText = saveLocationGroup.add("edittext", inputPlacement, "");
+
 // Buttons Group
-const buttonsGroup = dlg.add("group", [margin, margin + (groupHeight * 6), groupWidth, groupHeight * 7.5]);
+const buttonsGroup = dlg.add("group", [margin, margin + (groupHeight * 7), groupWidth, groupHeight * 8.5]);
 buttonsGroup.alignment = "center";
 const okGroup = buttonsGroup.add("group", [0, 0, 240, groupHeight]);
 const cancelGroup = buttonsGroup.add("group", [240, 0, 480, groupHeight]);
 const okbutton = okGroup.add("button", [10, 0, 220, groupHeight], "Ok");
 const cancelbutton = cancelGroup.add("button", [10, 0, 220, groupHeight], "Cancel");
 
+// button functions
+saveLocButton.onClick = function () {
+  saveLocationText.text = Folder.selectDialog("Choose a Folder");
+}
+
 okbutton.onClick = function () {
   if (app.documents.length > 0) {
-    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, heightText.text, widthText.text, depthText.text, priceText.text, frameCheck.value,);
+    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, heightText.text, widthText.text, depthText.text, priceText.text, frameCheck.value, saveLocationText.text);
     if (saved) {
       alert("You did it.");
       dlg.hide();

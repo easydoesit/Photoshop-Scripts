@@ -4,6 +4,10 @@ const doc = app.activeDocument;
 //get the current title of the doc
 const docTitleArr = doc.name.split(".");
 
+//default artist name (you can change here)
+firstName = "Michael"
+lastName = "Grills"
+
 // check if the folder exists if not make it.
 const makeFolder = function (folderStr) {
 
@@ -180,12 +184,12 @@ titleText.active = true;
 // Artist First Name Group
 const inputFirstNameGroup = dlg.add("panel", [margin, margin + groupHeight, groupWidth, groupHeight * 2]);
 inputFirstNameGroup.add("statictext", labelPlacement, "First Name:");
-const firstNameText = inputFirstNameGroup.add("edittext", inputPlacement, "Michael");
+const firstNameText = inputFirstNameGroup.add("edittext", inputPlacement, firstName);
 
 // Artist Last Name Group
 const inputLastNameGroup = dlg.add("panel", [margin, margin + (groupHeight * 2), groupWidth, groupHeight * 3]);
 inputLastNameGroup.add("statictext", labelPlacement, "Last Name:");
-const lastNameText = inputLastNameGroup.add("edittext", inputPlacement, "Grills");
+const lastNameText = inputLastNameGroup.add("edittext", inputPlacement, lastName);
 
 // Height,Width,Depth Group
 const HWDGroup = dlg.add("panel", [margin, margin + (groupHeight * 3), groupWidth, groupHeight * 4]);

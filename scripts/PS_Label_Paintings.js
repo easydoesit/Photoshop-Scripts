@@ -141,20 +141,20 @@ const saveName = function (title, artistFName, artistLName, medium, height, widt
     saveLocationText.active = true;
     return false;
   } else {
-    saveLoc = saveLoc + "/" + realTitle;
+    //saveLoc = saveLoc + "/" + realTitle;
     makeFolder(saveLoc);
   }
 
   const averageColor = getAverageColor();
 
   if (frame) {
-    frame = "Framed";
+    frame = true;
   } else {
-    frame = "unframed";
+    frame = false;
   }
 
   //the file name
-  jpgFile = new File(saveLoc + "/" + realTitle + "-by_" + artistFName + "-" + artistLName + "-m" + realMedium + "-h" + height + "-w" + width + "-d" + depth + "-" + frame + "-p" + price + "-rgb" + averageColor[0] + "_" + averageColor[1] + "_" + averageColor[2] + ".jpeg");
+  jpgFile = new File(saveLoc + "/" + realTitle + "_a" + artistFName + "-" + artistLName + "_m" + realMedium + "_h" + height + "_w" + width + "_d" + depth + "_f" + frame + "_p" + price + "_r" + averageColor[0] + "_g" + averageColor[1] + "_b" + averageColor[2] + ".jpeg");
   alert("Saving as: " + jpgFile);
   // jpg options
   jpgSaveOptions = new JPEGSaveOptions();

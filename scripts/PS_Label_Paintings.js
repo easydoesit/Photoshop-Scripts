@@ -54,18 +54,19 @@ const convertStringtoInt = function (numString) {
   return returnNum;
 }
 
-
 // saveName takes in all the info and creates a file name out of it
 // first checks that all the info is there
 // then changes any spaces in titles to have "-"
 // Then it writes out the file name
 
-const saveName = function (title, artistFName, artistLName, height, width, depth, price, frame, saveLoc) {
+const saveName = function (title, artistFName, artistLName, medium, height, width, depth, price, frame, saveLoc) {
   if (!title) {
     alert("You forgot the title");
-    return false;
     titleText.active = true;
+    return false;
   }
+
+  const realTitle = title.replace(" ", "-", "g");
 
   if (!artistFName) {
     alert("You forgot First Name");
@@ -78,6 +79,14 @@ const saveName = function (title, artistFName, artistLName, height, width, depth
     lastNameText.active = true;
     return false;
   }
+
+  if (!medium) {
+    alert("You forgot the Medium");
+    mediumText.active = true;
+    return false;
+  }
+
+  const realMedium = medium.replace(" ", "-", "g");
 
   if (!height) {
     alert("Check Your Height Value \n Note it must be an integer");
@@ -132,12 +141,11 @@ const saveName = function (title, artistFName, artistLName, height, width, depth
     saveLocationText.active = true;
     return false;
   } else {
+    saveLoc = saveLoc + "/" + realTitle;
     makeFolder(saveLoc);
   }
 
   const averageColor = getAverageColor();
-
-  const realTitle = title.replace(" ", "-", "g");
 
   if (frame) {
     frame = "Framed";
@@ -146,7 +154,7 @@ const saveName = function (title, artistFName, artistLName, height, width, depth
   }
 
   //the file name
-  jpgFile = new File(saveLoc + "/" + realTitle + "-by_" + artistFName + "-" + artistLName + "-h" + height + "-w" + width + "-d" + depth + "-" + frame + "-p" + price + "-rgb" + averageColor[0] + "_" + averageColor[1] + "_" + averageColor[2] + ".jpeg");
+  jpgFile = new File(saveLoc + "/" + realTitle + "-by_" + artistFName + "-" + artistLName + "-m" + realMedium + "-h" + height + "-w" + width + "-d" + depth + "-" + frame + "-p" + price + "-rgb" + averageColor[0] + "_" + averageColor[1] + "_" + averageColor[2] + ".jpeg");
   alert("Saving as: " + jpgFile);
   // jpg options
   jpgSaveOptions = new JPEGSaveOptions();
@@ -163,7 +171,7 @@ const saveName = function (title, artistFName, artistLName, height, width, depth
 // Dialogue Window
 const margin = 10;
 const width = 500;
-const height = 450;
+const height = 500;
 const rowHeight = 30;
 const labelWidth = 80;
 const lrgTextboxWidth = width - labelWidth;
@@ -191,8 +199,14 @@ const inputLastNameGroup = dlg.add("panel", [margin, margin + (groupHeight * 2),
 inputLastNameGroup.add("statictext", labelPlacement, "Last Name:");
 const lastNameText = inputLastNameGroup.add("edittext", inputPlacement, lastName);
 
+// Medium Group
+const mediumGroup = dlg.add("panel", [margin, margin + (groupHeight * 3), groupWidth, groupHeight * 4]);
+mediumGroup.add("statictext", labelPlacement, "Medium:");
+const mediumText = mediumGroup.add("edittext", inputPlacement, "");
+
+
 // Height,Width,Depth Group
-const HWDGroup = dlg.add("panel", [margin, margin + (groupHeight * 3), groupWidth, groupHeight * 4]);
+const HWDGroup = dlg.add("panel", [margin, margin + (groupHeight * 4), groupWidth, groupHeight * 5]);
 const heightGroup = HWDGroup.add("group", [0, 0, 160, groupHeight]);
 const widthGroup = HWDGroup.add("group", [160, 0, 320, groupHeight]);
 const depthGroup = HWDGroup.add("group", [320, 0, 480, groupHeight]);
@@ -204,24 +218,24 @@ const widthText = widthGroup.add("edittext", [margin + labelWidth, margin - 2, s
 const depthText = depthGroup.add("edittext", [margin + labelWidth, margin - 2, smlTextboxWidth, 0]);
 
 // Price Group
-const priceGroup = dlg.add("panel", [margin, margin + (groupHeight * 4), groupWidth, groupHeight * 5]);
+const priceGroup = dlg.add("panel", [margin, margin + (groupHeight * 5), groupWidth, groupHeight * 6]);
 priceGroup.add("statictext", labelPlacement, "Price $:");
 const priceText = priceGroup.add("edittext", [margin + labelWidth, margin - 2, 150, 0]);
 
 // Extras Group
-const extrasGroup = dlg.add("panel", [margin, margin + (groupHeight * 5), groupWidth, groupHeight * 6]);
+const extrasGroup = dlg.add("panel", [margin, margin + (groupHeight * 6), groupWidth, groupHeight * 7]);
 const frameGroup = extrasGroup.add("group", [0, 0, 240, groupHeight]);
 //const availGroup = extrasGroup.add("group",[240,0,480,groupHeight]);
 const frameCheck = frameGroup.add("checkbox", [margin + labelWidth, margin - 2, smlTextboxWidth, 0], "Framed?");
 //const availCheck = availGroup.add("checkbox", [margin + labelWidth, margin-2, smlTextboxWidth, 0], "Available?");
 
 //Save location Group
-const saveLocationGroup = dlg.add("panel", [margin, margin + (groupHeight * 6), groupWidth, groupHeight * 7]);
+const saveLocationGroup = dlg.add("panel", [margin, margin + (groupHeight * 7), groupWidth, groupHeight * 8]);
 const saveLocButton = saveLocationGroup.add("button", [0, 6, 80, groupHeight - 20], "Save @");
 const saveLocationText = saveLocationGroup.add("edittext", inputPlacement, "");
 
 // Buttons Group
-const buttonsGroup = dlg.add("group", [margin, margin + (groupHeight * 7), groupWidth, groupHeight * 8.5]);
+const buttonsGroup = dlg.add("group", [margin, margin + (groupHeight * 8), groupWidth, groupHeight * 9.5]);
 buttonsGroup.alignment = "center";
 const okGroup = buttonsGroup.add("group", [0, 0, 240, groupHeight]);
 const cancelGroup = buttonsGroup.add("group", [240, 0, 480, groupHeight]);
@@ -235,7 +249,7 @@ saveLocButton.onClick = function () {
 
 okbutton.onClick = function () {
   if (app.documents.length > 0) {
-    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, heightText.text, widthText.text, depthText.text, priceText.text, frameCheck.value, saveLocationText.text);
+    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, mediumText.text, heightText.text, widthText.text, depthText.text, priceText.text, frameCheck.value, saveLocationText.text);
     if (saved) {
       alert("You did it.");
       dlg.hide();

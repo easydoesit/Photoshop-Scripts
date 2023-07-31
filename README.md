@@ -6,7 +6,7 @@ Get the average color of a document in photoshop
 
 ## PS_Label_Paintings
 
-Simple Dialog I use for my personal paintings Nameing convention.
+Simple Dialog I use for my personal paintings Naming convention.
 
 ## PS_spritesheetmaker
 

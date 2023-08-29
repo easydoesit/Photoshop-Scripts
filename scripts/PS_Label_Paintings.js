@@ -154,7 +154,7 @@ const saveName = function (title, artistFName, artistLName, medium, height, widt
   }
 
   //the file name
-  jpgFile = new File(saveLoc + "/" + realTitle + "_a" + artistFName + "-" + artistLName + "_m" + realMedium + "_h" + height + "_w" + width + "_d" + depth + "_f" + frame + "_p" + price + "_r" + averageColor[0] + "_g" + averageColor[1] + "_b" + averageColor[2] + ".jpeg");
+  jpgFile = new File(saveLoc + "/" + realTitle + "_a" + artistFName + "-" + artistLName + "_m" + realMedium + "_h" + height + "_w" + width + "_d" + depth + "_f" + frame + "_p" + price * 100 + "_r" + averageColor[0] + "_g" + averageColor[1] + "_b" + averageColor[2] + ".jpeg");
   alert("Saving as: " + jpgFile);
   // jpg options
   jpgSaveOptions = new JPEGSaveOptions();

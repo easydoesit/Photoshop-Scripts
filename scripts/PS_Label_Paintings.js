@@ -1,8 +1,18 @@
 //this script will create a dialogue box for naming files correctly.
 
+app.preferences.rulerUnits = Units.PIXELS
+
 const doc = app.activeDocument;
 //get the current title of the doc
 const docTitleArr = doc.name.split(".");
+
+width = String(doc.width)
+
+width = width.replace(" px", "");
+height = String(doc.height)
+height = height.replace(" px", "");
+
+const pixelSize = [width, height];
 
 //default artist name (you can change here)
 firstName = "Michael"
@@ -24,8 +34,8 @@ const isInt = function (n) {
 
 // get average color
 const getAverageColor = function () {
-  const x = 1;
-  const y = 1;
+  const x = doc.width / 2;
+  const y = doc.width / 2;
 
 
   doc.flatten();
@@ -36,16 +46,19 @@ const getAverageColor = function () {
 
   doc.paste();
 
-  doc.activeLayer.applyAverage();
+  workingLayer = app.activeDocument.layers.getByName("Layer 1");
 
-  const pointSample = doc.colorSamplers.add([x - 1, y - 1]);
+  workingLayer.applyAverage();
+  app.activeDocument.colorSamplers.removeAll();
+  const pointSample = doc.colorSamplers.add([x, y]);
+
   const rgb = [
     Math.round(pointSample.color.rgb.red),
     Math.round(pointSample.color.rgb.green),
     Math.round(pointSample.color.rgb.blue),
   ];
 
-  doc.activeLayer.remove();
+  workingLayer.remove();
   return rgb;
 }
 
@@ -59,7 +72,7 @@ const convertStringtoInt = function (numString) {
 // then changes any spaces in titles to have "-"
 // Then it writes out the file name
 
-const saveName = function (title, artistFName, artistLName, medium, height, width, depth, price, frame, saveLoc) {
+const saveName = function (title, artistFName, artistLName, medium, height, width, depth, price, frame, imageSize, saveLoc) {
   if (!title) {
     alert("You forgot the title");
     titleText.active = true;
@@ -154,7 +167,7 @@ const saveName = function (title, artistFName, artistLName, medium, height, widt
   }
 
   //the file name
-  jpgFile = new File(saveLoc + "/" + realTitle + "_a" + artistFName + "-" + artistLName + "_m" + realMedium + "_h" + height + "_w" + width + "_d" + depth + "_f" + frame + "_p" + price * 100 + "_r" + averageColor[0] + "_g" + averageColor[1] + "_b" + averageColor[2] + ".jpeg");
+  jpgFile = new File(saveLoc + "/" + realTitle + "_a" + artistFName + "-" + artistLName + "_m" + realMedium + "_h" + height + "_w" + width + "_d" + depth + "_f" + frame + "_p" + price * 100 + "_r" + averageColor[0] + "_g" + averageColor[1] + "_b" + averageColor[2] + "_x" + imageSize[0] + "_y" + imageSize[1] + ".jpeg");
   alert("Saving as: " + jpgFile);
   // jpg options
   jpgSaveOptions = new JPEGSaveOptions();
@@ -249,7 +262,7 @@ saveLocButton.onClick = function () {
 
 okbutton.onClick = function () {
   if (app.documents.length > 0) {
-    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, mediumText.text, heightText.text, widthText.text, depthText.text, priceText.text, frameCheck.value, saveLocationText.text);
+    const saved = saveName(titleText.text, firstNameText.text, lastNameText.text, mediumText.text, heightText.text, widthText.text, depthText.text, priceText.text, frameCheck.value, pixelSize, saveLocationText.text);
     if (saved) {
       alert("You did it.");
       dlg.hide();

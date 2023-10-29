@@ -35,7 +35,7 @@ const isInt = function (n) {
 // get average color
 const getAverageColor = function () {
   const x = doc.width / 2;
-  const y = doc.width / 2;
+  const y = doc.height / 2;
 
 
   doc.flatten();
